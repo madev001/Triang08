@@ -1,0 +1,29 @@
+pipeline { 
+    agent any  
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "mvn"
+    }
+    stages { 
+        stage('GetFromGit') { 
+            steps { 
+                checkout([$class: 'GitSCM',
+                            branches: [[name: 'origin/main']],
+                            extensions: [[$class: 'WipeWorkspace']],
+                            userRemoteConfigs: [[url: 'https://github.com/madev001/TpDevops.git']]
+                        ])
+              
+            }
+        }
+        stage('compilation') { 
+            steps { 
+               bat 'mvn compile'
+            }
+        }
+        stage('test') { 
+            steps { 
+               bat 'mvn test'
+            }
+        }
+    }
+}
